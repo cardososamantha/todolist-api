@@ -4,8 +4,11 @@ class TodosRepository {
 	}
 
 	listTodos = () => {
-		//TODO: must be refactored to not list todos with deleted:true
-		return this.todos;
+		const filteredTodos = this.todos.filter((todos) => {
+			return !todos.deletedAt;
+		});
+
+		return filteredTodos;
 	};
 
 	findTodoById = (id) => {
