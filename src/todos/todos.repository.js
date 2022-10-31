@@ -9,9 +9,9 @@ class TodosRepository {
 	};
 
 	findTodoById = (id) => {
-		//TODO: must be refactored to not list todos with deleted:true
-
 		const todo = this.todos.find((todo) => todo.id === id);
+
+		if (todo.deletedAt) return;
 
 		return todo;
 	};
@@ -21,8 +21,6 @@ class TodosRepository {
 	};
 
 	updateTodo = ({ id, data }) => {
-		//TODO: must be refactored to not list todos with deleted:true
-
 		const todoIndex = this.todos.findIndex((todo) => todo.id === id);
 
 		if (todoIndex < 0) throw new Error();
