@@ -1,58 +1,61 @@
-const crypto = require('crypto');
-const todos = [];
+const Todo = require('./todos.model');
 
-const todosController = {
-	list: (request, response) => {
+class TodosController {
+	constructor(todosRepository) {
+		this.todosRepository = todosRepository;
+	}
+
+	list = (request, response) => {
+		const todos = this.todosRepository.listTodos();
 		return response.json(todos);
-	},
+	};
 
-	findById: (request, response) => {
+	findById = (request, response) => {
 		const { id } = request.params;
-		const todo = todos.find((todo) => todo.id === id);
+		const todo = this.todosRepository.findTodoById(id);
 
 		if (!todo) return response.status(404).json({ message: 'todo not found' });
 
 		return response.json(todo);
-	},
+	};
 
-	create: (request, response) => {
-		const todo = {
-			id: crypto.randomUUID(request, response),
-			...request.body,
-			createdAt: new Date(request, response),
-			deleted: false,
-		};
+	create = (request, response) => {
+		const { title, description, status } = request.body;
+		const todo = new Todo();
 
-		todos.push(todo);
+		Object.assign(todo, {
+			title,
+			description,
+			status,
+			createdAt: new Date(),
+		});
+
+		this.todosRepository.createTodo(todo);
 		return response.status(201).json({ id: todo.id });
-	},
+	};
 
-	update: (request, response) => {
+	update = (request, response) => {
 		const { id } = request.params;
-		const todoIndex = todos.findIndex((todo) => todo.id === id);
+		const { title, description, status } = request.body;
 
-		if (todoIndex < 0)
-			return response.status(404).json({ message: 'todo not found' });
-
-		todos[todoIndex] = {
-			...todos[todoIndex],
-			...request.body,
-		};
+		this.todosRepository.updateTodo({
+			id,
+			data: {
+				title,
+				description,
+				status,
+			},
+		});
 
 		return response.status(204).json({ message: 'sucess' });
-	},
+	};
 
-	delete: (request, response) => {
+	delete = (request, response) => {
 		const { id } = request.params;
-		const todoIndex = todos.findIndex((todo) => todo.id === id);
+		this.todosRepository.deleteTodo(id);
 
-		todos[todoIndex] = {
-			...todos[todoIndex],
-			deleted: true,
-		};
+		return response.status(204).send();
+	};
+}
 
-		return response.json(request, response);
-	},
-};
-
-module.exports = todosController;
+module.exports = TodosController;

@@ -1,8 +1,12 @@
 const { Router } = require('express');
 
-const todosController = require('./todos.controller');
+const TodosRepository = require('./todos.repository');
+const TodosController = require('./todos.controller');
 
 const app = Router();
+
+const todosRepository = new TodosRepository();
+const todosController = new TodosController(todosRepository);
 
 app.get('/', todosController.list);
 
