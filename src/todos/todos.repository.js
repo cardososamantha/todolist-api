@@ -27,6 +27,8 @@ class TodosRepository {
 
 		if (todoIndex < 0) throw new Error();
 
+		if (this.todos[todoIndex].deletedAt) throw new Error();
+
 		Object.assign(this.todos[todoIndex], data);
 
 		return this.todos[todoIndex];
