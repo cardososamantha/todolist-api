@@ -20,13 +20,13 @@ class TodosController {
 	};
 
 	create = (request, response) => {
-		const { title, description, status } = request.body;
+		const { title, description } = request.body;
 		const todo = new Todo();
 
 		Object.assign(todo, {
 			title,
 			description,
-			status,
+			status: 'OPEN',
 			createdAt: new Date(),
 		});
 
@@ -36,14 +36,15 @@ class TodosController {
 
 	update = (request, response) => {
 		const { id } = request.params;
-		const { title, description, status } = request.body;
+		const { title, description } = request.body;
+
+		this.findById(id);
 
 		this.todosRepository.updateTodo({
 			id,
 			data: {
 				title,
 				description,
-				status,
 			},
 		});
 

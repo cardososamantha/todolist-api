@@ -4,14 +4,11 @@ class TodosRepository {
 	}
 
 	listTodos = () => {
-		const filteredTodos = this.todos.filter((todos) => {
-			return !todos.deletedAt;
-		});
-
-		return filteredTodos;
+		return this.todos.filter((todos) => !todos.deletedAt);
 	};
 
 	findTodoById = (id) => {
+		
 		const todo = this.todos.find((todo) => todo.id === id);
 
 		if (todo.deletedAt) return;
